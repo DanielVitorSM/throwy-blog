@@ -1,0 +1,100 @@
+$primary: #FF006E
+$secondary: #3A86FF
+$accent: #06D6A0
+
+$dark: #1D1D1D
+
+$positive: #21BA45
+$negative: #C10015
+$info: #31CCEC
+$warning: #F2C037
+
+$facebook: #1877F2
+$google: #DB4437
+
+.text-facebook
+    color: $facebook !important
+
+.bg-facebook
+    background: $facebook !important
+
+.text-google
+    color: $google !important
+
+.bg-google
+    background: $google !important
+
+*
+    font-family: 'Ubuntu'
+
+a
+    text-decoration: none
+
+a:hover
+    text-decoration: underline
+
+.container
+    max-width: 1200px
+    margin: 0 auto
+
+.q-btn-dropdown--simple *+.q-btn-dropdown__arrow
+    margin: 0 !important
+
+.on-left
+    margin-right: 4px !important
+
+.on-right
+    margin-left: 4px !important
+
+.no-hover .q-focus-helper
+    display: none
+
+a
+    color: inherit !important
+    text-decoration: inherit !important
+
+    *
+        text-decoration: none !important
+
+a:hover
+    .text-h5, .text-h6
+        text-decoration: underline !important
+
+.fixed-container
+    max-width: 700px
+    width: 100%
+
+.sticky-last-column
+    width: 100%
+
+    thead tr:last-child th:last-child
+        background-color: white
+
+    td:last-child
+        background-color: white
+
+    th:last-child,
+    td:last-child
+        position: sticky
+        right: 0
+        z-index: 1
+
+.text-underline-hover:hover
+    text-decoration: underline
+    cursor: pointer
+
+*
+    scroll-behavior: smooth
+    scrollbar-width: auto
+    scrollbar-color: $primary #FFF8
+
+*::-webkit-scrollbar
+    width: 8px
+
+*::-webkit-scrollbar-track
+    background: #FFF8
+
+*::-webkit-scrollbar-thumb
+    background-color: $primary
+    border-radius: 10px
+    border: 2px solid #FFF8

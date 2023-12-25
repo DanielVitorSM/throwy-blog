@@ -1,104 +1,114 @@
-<script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+<script setup lang="ts">
+import GuestLayout from "@/Layouts/GuestLayout.vue";
+import { requiredRule, minLengthRule, confirmPasswordRule, emailRule } from "@/Utils/validations";
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import route from 'ziggy-js'
 
 const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    terms: false,
+	name: "",
+	email: "",
+	password: "",
+	password_confirmation: "",
+	terms: false
 });
 
 const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
+	form.post(route("register"), {
+		onFinish: () => form.reset("password", "password_confirmation")
+	});
 };
+
+const showPassword = ref(false);
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Register" />
+	<GuestLayout>
+		<Head title="Cadastrar"></Head>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
+		<q-page padding class="items-center">
+			<section class="row justify-center">
+				<div class="col-12 column q-col-gutter-md" style="max-width: 400px">
+					<h1 class="q-ma-none text-bold text-h5 text-center">Cadastrar</h1>
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+					<div class="q-gutter-md row items-center justify-center">
+						<q-btn unelevated class="q-px-lg q-py-md" size="sm" color="google" icon="fa-brands fa-google" />
+						<q-btn
+							class="q-px-lg q-py-md"
+							size="sm"
+							color="facebook"
+							unelevated
+							icon="fa-brands fa-facebook"
+						/>
+					</div>
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+					<div class="q-mt-md">
+						<span class="relative-position">
+							<hr />
+							<span class="absolute-center text-body1 bg-white q-px-sm">ou</span>
+						</span>
+					</div>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+					<q-form @submit.prevent="submit" class="q-gutter-md column">
+						<q-input
+							hide-bottom-space
+							outlined
+							v-model="form.name"
+							label="Nome"
+							lazy-rules
+							:rules="[requiredRule]"
+						/>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+						<q-input
+							hide-bottom-space
+							outlined
+							v-model="form.email"
+							label="Email"
+							lazy-rules
+							:rules="[requiredRule, emailRule]"
+						/>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+						<q-input
+							hide-bottom-space
+							outlined
+							v-model="form.password"
+							label="Senha"
+							lazy-rules
+							:type="showPassword ? 'text' : 'password'"
+							:rules="[requiredRule, minLengthRule(6)]"
+						>
+							<template v-slot:append>
+								<q-icon
+									:name="!showPassword ? 'visibility_off' : 'visibility'"
+									class="cursor-pointer"
+									@click="showPassword = !showPassword"
+								/>
+							</template>
+						</q-input>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+						<q-input
+							hide-bottom-space
+							outlined
+							v-model="form.password_confirmation"
+							label="Confirmar Senha"
+							reactive-rules
+							lazy-rules
+							:type="showPassword ? 'text' : 'password'"
+							:rules="[requiredRule, (val) => confirmPasswordRule(val, form.password)]"
+						/>
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
+						<q-toggle v-model="form.terms" label="Li e concordo com os Termos e Condições" />
 
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    :href="route('login')"
-                    class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                >
-                    Already registered?
-                </Link>
-
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+						<q-btn size="lg" no-caps unelevated label="Cadastrar" type="submit" color="primary" />
+					</q-form>
+                    
+					<span class="text-dark text-body1 q-mt-md text-center">
+						Já possui uma conta?
+						<Link :href="route('login')" class="text-primary">Entre agora</Link>
+						e continue de onde parou!
+					</span>
+				</div>
+			</section>
+		</q-page>
+	</GuestLayout>
 </template>

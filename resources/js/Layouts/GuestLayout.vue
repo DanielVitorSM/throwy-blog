@@ -1,20 +1,31 @@
-<script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Link } from '@inertiajs/vue3';
+<script setup lang="ts">
+import { ref } from "vue";
+import AppLogo from "@/Components/AppLogo.vue";
+import { Link } from "@inertiajs/vue3";
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-        <div>
-            <Link href="/">
-                <ApplicationLogo class="w-20 h-20 fill-current text-gray-500" />
-            </Link>
-        </div>
+    <q-layout view="hHh lpR lfr">
+        <q-header bordered class="bg-transparent text-dark">
+            <q-toolbar>
+                <q-toolbar-title >
+                    <Link href="/" class="row items-center">
+                        <AppLogo />
+                    </Link>
+                </q-toolbar-title>
+            </q-toolbar>
+        </q-header>
 
-        <div
-            class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg"
-        >
-            <slot />
-        </div>
-    </div>
+        <q-page-container class="full-height">
+            <slot></slot>
+        </q-page-container>
+
+        <q-footer bordered class="bg-transparent text-dark">
+            <q-toolbar>
+                <q-space />
+                <small>Throwy 2023 &copy; Todos os direitos reservados</small>
+                <q-space />
+            </q-toolbar>
+        </q-footer>
+    </q-layout>
 </template>

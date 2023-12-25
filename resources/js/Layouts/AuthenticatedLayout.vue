@@ -1,152 +1,198 @@
-<script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+<script setup lang="ts">
+import { computed, onMounted, ref, watch } from "vue";
+import AppLogo from "@/Components/AppLogo.vue";
+import { Link, usePage } from "@inertiajs/vue3";
+import { useQuasar } from "quasar";
+import { showErrorNotify, showSuccessNotify } from "@/Utils/notify";
 
-const showingNavigationDropdown = ref(false);
+const leftDrawerOpen = ref(false);
+const page = usePage();
+
+const toggleLeftDrawer = () => (leftDrawerOpen.value = !leftDrawerOpen.value);
+
+interface Route {
+	title: string;
+	name: string;
+	include?: string[];
+	icon?: string;
+	children?: Route[];
+}
+
+const routes: Route[] = [
+	{
+		title: "Dashboard",
+		name: "dashboard",
+		icon: "home"
+	},
+	{
+		title: "Posts",
+		name: "posts.index",
+		include: ["posts.show", "posts.create", "posts.edit"],
+		icon: "article",
+		children: [
+			{
+				title: "Todos os posts",
+				name: "posts.index"
+			},
+			{
+				title: "Adicionar um novo post",
+				name: "posts.create"
+			},
+			{
+				title: "Categorias",
+				name: "categories.index"
+			}
+		]
+	}
+];
+
+const showFlashMessages = (props: any) => {
+	const flash = props.flash;
+	if (!flash) return;
+	if (flash.success) showSuccessNotify(flash.success);
+	if (flash.error) showErrorNotify(flash.error);
+};
+
+watch(() => page.props, showFlashMessages);
+
+onMounted(() => showFlashMessages(page.props));
+
+const leftDrawerOpenFinal = computed(() => {
+	const $q = useQuasar();
+	return $q.screen.gt.sm ? true : leftDrawerOpen.value;
+});
+
+const verifyRouteIsActive = (rt: Route) => {
+	let routes = [rt.name];
+	if (rt.children) rt.children.forEach((e) => routes.push(e.name));
+	if (rt.include) rt.include.forEach((e) => routes.push(e));
+
+	const current = route().current();
+	return current && routes.includes(current);
+};
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-                <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
-                                    />
-                                </Link>
-                            </div>
+	<q-layout class="bg-grey-2" view="hHh lpR lfr">
+		<q-header class="bg-white text-dark">
+			<q-toolbar class="q-px-md q-py-md">
+				<div class="row items-center">
+					<q-btn
+						v-if="$q.screen.lt.md"
+						flat
+						@click="toggleLeftDrawer"
+						round
+						color="dark"
+						icon="menu"
+						class="q-mr-sm"
+					/>
 
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
+					<AppLogo />
+				</div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
-                            <!-- Settings Dropdown -->
-                            <div class="ml-3 relative">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                {{ $page.props.auth.user.name }}
+				<q-space />
 
-                                                <svg
-                                                    class="ml-2 -mr-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </template>
+				<q-btn round color="black" size="12px">
+					<q-avatar size="32px">
+						<img src="https://github.com/danielvitorsm.png" />
+					</q-avatar>
+				</q-btn>
+			</q-toolbar>
+		</q-header>
 
-                                    <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
+		<q-drawer
+			overlay
+			:model-value="leftDrawerOpenFinal"
+			:key="`drawer-main-${$q.screen.gt.sm}`"
+			:behavior="$q.screen.gt.sm ? 'desktop' : 'mobile'"
+			show-if-above
+			side="left"
+			:width="300"
+			bordered
+			@hide="leftDrawerOpen = false"
+		>
+			<q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: '0' }">
+				<q-list padding>
+					<div v-for="(route, i) in routes" :key="i">
+						<Link
+							v-if="route.children && route.children.length > 0"
+							:href="$route(route.name)"
+						>
+							<q-expansion-item
+								icon="article"
+								label="Posts"
+								:header-class="
+									verifyRouteIsActive(route) ? 'bg-black text-white' : 'bg-white'
+								"
+								class="bg-grey-4"
+								:model-value="verifyRouteIsActive(route)"
+							>
+								<Link
+									v-for="(child, j) in route.children"
+									:key="j"
+									:href="$route(child.name)"
+								>
+									<q-item
+										active-class="text-bold text-black"
+										:active="$route().current() == child.name"
+										dense
+										clickable
+										v-ripple
+									>
+										<q-item-section>{{ child.title }}</q-item-section>
+									</q-item>
+								</Link>
+							</q-expansion-item>
+						</Link>
 
-                        <!-- Hamburger -->
-                        <div class="-mr-2 flex items-center sm:hidden">
-                            <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
-                            >
-                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+						<Link v-else :href="$route(route.name)">
+							<q-item
+								:active="verifyRouteIsActive(route)"
+								active-class="text-primary"
+								clickable
+								v-ripple
+							>
+								<q-item-section avatar>
+									<q-icon :name="route.icon" />
+								</q-item-section>
 
-                <!-- Responsive Navigation Menu -->
-                <div
-                    :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden"
-                >
-                    <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+								<q-item-section>{{ route.title }}</q-item-section>
+							</q-item>
+						</Link>
+					</div>
 
-                    <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-                        <div class="px-4">
-                            <div class="font-medium text-base text-gray-800 dark:text-gray-200">
-                                {{ $page.props.auth.user.name }}
-                            </div>
-                            <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
-                        </div>
+					<!-- <q-item clickable v-ripple>
+						<q-item-section avatar>
+							<q-icon name="comment" />
+						</q-item-section>
 
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+						<q-item-section>Comentários</q-item-section>
+					</q-item>
 
-            <!-- Page Heading -->
-            <header class="bg-white dark:bg-gray-800 shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
-                </div>
-            </header>
+					<q-separator />
 
-            <!-- Page Content -->
-            <main>
-                <slot />
-            </main>
-        </div>
-    </div>
+					<q-expansion-item expand-separator icon="group" label="Usuários">
+						<q-item dense clickable v-ripple>
+							<q-item-section>Todos os usuários</q-item-section>
+						</q-item>
+						<q-item dense clickable v-ripple>
+							<q-item-section>Novo usuário</q-item-section>
+						</q-item>
+					</q-expansion-item> -->
+				</q-list>
+			</q-scroll-area>
+		</q-drawer>
+
+		<q-page-container :style="`padding-left: ${$q.screen.gt.sm ? '300px' : '0'};`">
+			<q-page padding>
+				<slot></slot>
+			</q-page>
+		</q-page-container>
+
+		<q-footer class="bg-white text-dark">
+			<q-toolbar class="text-center justify-center">
+				<small>Throwy 2023 &copy; Todos os direitos reservados</small>
+			</q-toolbar>
+		</q-footer>
+	</q-layout>
 </template>

@@ -2,8 +2,10 @@
     "include": [
         "resources/**/*.ts",
         "resources/**/*.d.ts",
-        "resources/**/*.vue"
+        "resources/**/*.vue",
+        
     ],
+    "@/*": ["./src/*"],
     "compilerOptions": {
         "allowJs": false,
         "strict": true,
@@ -19,6 +21,10 @@
         "useDefineForClassFields": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "paths": {
+          "@/*": ["./resources/js/*"],
+          "ziggy-js": ["./vendor/tightenco/ziggy"]
+        },
     }
 }

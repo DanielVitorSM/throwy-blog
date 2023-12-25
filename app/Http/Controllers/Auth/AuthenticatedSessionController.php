@@ -15,7 +15,7 @@ use Inertia\Response;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Shows the login form.
      */
     public function create(): Response
     {
@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->route('dashboard');
     }
 
     /**

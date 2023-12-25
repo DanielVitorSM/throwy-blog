@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -46,5 +49,26 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Prepare exception for rendering.
+     *
+     * @param  \Throwable  $e
+     * @return Response
+     */
+    public function render($request, Throwable $e)
+    {
+        $response = parent::render($request, $e);
+        $type = in_array('auth', Route::current()->gatherMiddleware()) ? 'manager' : 'guest';
+        $status = $response->getStatusCode();
+
+        if (!app()->environment(['testing']) && in_array($status, [404, 403, 500])) {
+            return Inertia::render('Error', ['status' => $status, 'type' => $type])
+                ->toResponse($request)
+                ->setStatusCode($status);
+        }
+
+        return $response;
     }
 }
