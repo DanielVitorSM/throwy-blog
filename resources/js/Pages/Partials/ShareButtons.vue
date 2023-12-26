@@ -32,7 +32,6 @@ const copyShareLink = () =>
 <template>
 	<div
 		:class="asRow ? 'bg-white' : 'q-mx-sm q-mt-lg'"
-		v-bind="$props"
 		style="position: sticky; top: 70px; z-index: 999; align-self: flex-start"
 	>
 		<div :class="{ column: !asRow, row: asRow }" class="items-start q-gutter-sm">
