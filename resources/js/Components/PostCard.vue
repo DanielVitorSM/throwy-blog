@@ -16,7 +16,9 @@ defineProps({
 		<q-card-section horizontal>
 			<q-card-section class="q-pa-none full-width">
 				<div class="text-caption text-grey">
-					<b>{{ post.author.name }}</b>
+					<Link :data="{ search: post.author.name }" :href="`${$route('home')}`">
+						<b>{{ post.author.name }}</b>
+					</Link>
 					<span class="q-mx-sm">●</span>
 					{{ dayjs(post.published_at ?? post.created_at).fromNow() }}
 				</div>
@@ -28,9 +30,12 @@ defineProps({
 						{{ post.caption }}
 					</p>
 				</Link>
-				<q-badge color="secondary" text-color="white" class="q-ma-none">
-					{{ post.category.name }}
-				</q-badge>
+
+				<Link :data="{ search: post.category.name }" :href="`${$route('home')}`">
+					<q-badge color="secondary" text-color="white" class="q-ma-none">
+						{{ post.category.name }}
+					</q-badge>
+				</Link>
 			</q-card-section>
 
 			<q-card-section v-if="post.banner" class="q-py-none col-3 row items-start">

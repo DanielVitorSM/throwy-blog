@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Link } from "@inertiajs/vue3";
 import type { PropType } from "vue";
 
 type ItemType = {
@@ -32,14 +33,21 @@ defineProps({
 <template>
 	<div class="column items-start q-mb-xl">
 		<b class="text-h6">{{ title }}</b>
-		
+
 		<div class="row q-gutter-s q-mt-sm q-mb-md">
-			<q-chip class="q-ml-none bg-gray-6" v-for="item in items">
-				{{ item[labelName] }}
-			</q-chip>
+			<Link
+				v-for="(item, i) in items"
+				:key="i"
+				:data="{ search: item[labelName] }"
+				:href="`${$route('home')}`"
+			>
+				<q-chip class="q-ml-none bg-gray-6">
+					{{ item[labelName] }}
+				</q-chip>
+			</Link>
 		</div>
 
-		<q-btn
+		<!-- <q-btn
 			flat
 			no-caps
 			unelevated
@@ -47,6 +55,6 @@ defineProps({
 			class="no-hover"
 			icon-right="arrow_forward"
 			label="Ver todos"
-		/>
+		/> -->
 	</div>
 </template>

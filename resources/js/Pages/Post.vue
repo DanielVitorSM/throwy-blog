@@ -1,36 +1,24 @@
 <script setup lang="ts">
-import { Head, Link } from "@inertiajs/vue3";
+import { Head } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { computed, ref, type PropType } from "vue";
-import dayjs from "dayjs";
-import constants from "@/Utils/constants";
-import { shareOn } from "@/Utils/functions";
-import { copyToClipboard } from "quasar";
+import { type PropType } from "vue";
 import PostCard from "@/Components/PostCard.vue";
+import ShareButtons from "@/Pages/Partials/ShareButtons.vue";
 
-const props = defineProps({
+defineProps({
 	post: {
 		type: Object as PropType<Post>,
 		required: true
 	},
 	similarPosts: Array as PropType<Post[]>
 });
-
-const shareLink = computed(() => route("blog.show", { slug: props.post.slug }));
-const showingShareLinkTooltip = ref(false);
-
-const copyShareLink = () =>
-	copyToClipboard(shareLink.value).then(() => {
-		showingShareLinkTooltip.value = true;
-		setTimeout(() => (showingShareLinkTooltip.value = false), 1500);
-	});
 </script>
 
 <template>
-	<Head title="Post"></Head>
+	<Head :title="post.title" />
 
 	<AppLayout>
-		<q-page v-if="post">
+		<q-page v-if="post" padding>
 			<section class="row">
 				<section class="col"></section>
 				<section class="fixed-container q-py-lg">
@@ -46,20 +34,27 @@ const copyShareLink = () =>
 					<h1 class="text-h3 text-bold q-mt-none q-mb-md">{{ post.title }}</h1>
 
 					<p class="text-body1">{{ post.caption }}</p>
+					<ShareButtons
+						:slug="post.slug"
+						:title="post.title"
+						as-row
+						class="q-mb-xs"
+						v-if="!$q.screen.gt.sm"
+					/>
 
 					<q-img
 						:src="post.banner"
 						v-if="post.banner"
 						class="full-width rounded-borders"
 					/>
-					<hr v-else>
+					<hr v-else />
 
 					<div class="q-my-xl text-body1" v-html="post.content"></div>
 
-					<div v-if="post.tags && post.tags.length > 0">
+					<div class="q-mb-xl" v-if="post.tags && post.tags.length > 0">
 						<span class="text-overline">Tags:</span>
 
-						<div class="row">
+						<div class="row q-gutter-xs">
 							<q-badge
 								color="grey-8"
 								text-color="white"
@@ -73,7 +68,11 @@ const copyShareLink = () =>
 
 					<section>
 						<div class="row items-center q-gutter-lg">
-							<q-avatar size="60px" :icon="post.author.avatar ? '' : 'face'" color="grey-5">
+							<q-avatar
+								size="60px"
+								:icon="post.author.avatar ? '' : 'face'"
+								color="grey-5"
+							>
 								<img v-if="post.author.avatar" :src="post.author.avatar" />
 							</q-avatar>
 
@@ -93,39 +92,12 @@ const copyShareLink = () =>
 					</section>
 				</section>
 				<section class="col relative-position">
-					<div
-						class="q-mx-sm q-mt-lg"
-						style="position: sticky; top: 74px; align-self: flex-start"
-					>
-						<div class="column items-start q-gutter-sm">
-							<q-btn icon="link" unelevated flat round @click="copyShareLink">
-								<q-tooltip
-									no-parent-event
-									anchor="top middle"
-									self="bottom middle"
-									v-model="showingShareLinkTooltip"
-									class="bg-green-8"
-								>
-									Copiado para a área de transferência!
-								</q-tooltip>
-							</q-btn>
-							<a
-								v-for="[type, icon] in Object.entries(
-									constants.SHARE_BUTTONS_ICONS
-								)"
-								:key="type"
-								:href="shareOn(type, post.title, shareLink) ?? '/'"
-								target="_blank"
-							>
-								<q-btn :icon="icon" round unelevated flat />
-							</a>
-						</div>
-					</div>
+					<ShareButtons v-if="$q.screen.gt.sm" :slug="post.slug" :title="post.title" />
 				</section>
 			</section>
-			<section class="row justify-center">
+			<section class="row justify-center" v-if="similarPosts">
 				<div class="fixed-container">
-					<section v-if="similarPosts" class="column">
+					<section class="column">
 						<h2 class="text-h4">Postagens relacionadas</h2>
 
 						<PostCard

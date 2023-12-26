@@ -1,27 +1,43 @@
 <script setup lang="ts">
-import type { PropType } from "vue";
+import { computed, type PropType } from "vue";
 import { Head, router } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PostCard from "@/Components/PostCard.vue";
 import ChipGroup from "@/Components/ChipGroup.vue";
+import type { QTable } from "quasar";
 
-defineProps({
+const { pagination } = defineProps({
 	posts: Array as PropType<Post[]>,
 	categories: Array as PropType<Category[]>,
 	tags: Array as PropType<Tag[]>,
-	orderBy: String
+	pagination: Object as PropType<QTable["pagination"]>
 });
 
+const params = new URLSearchParams(window.location.search);
+const search = params.get("search") ?? null;
 const filterOptions: { [key: string]: string } = {
 	recent: "Recentes",
 	popular: "Populares"
 };
 
-const changeOrderBy = (orderBy: string): void => {
+const totalPages = computed(() => {
+	if (pagination) {
+		const total = pagination.rowsNumber ?? 1;
+		const limit = pagination.rowsPerPage ?? 1;
+		return Math.floor(total / limit);
+	}
+	return 1;
+});
+
+const load = (page: number, sortBy?: string): void => {
 	router.reload({
-		only: ["posts", "orderBy"],
+		only: ["posts", "pagination"],
+		preserveScroll: false,
+		preserveState: false,
+		onSuccess: () => window.scroll({ top: 0 }),
 		data: {
-			orderBy
+			sortBy: sortBy ?? pagination?.sortBy ?? "recent",
+			page
 		}
 	});
 };
@@ -58,7 +74,7 @@ const changeOrderBy = (orderBy: string): void => {
 					unelevated
 					flat
 					padding="0"
-					:label="filterOptions[orderBy ?? 'recent']"
+					:label="filterOptions[pagination?.sortBy ?? 'recent']"
 					no-caps
 					class="no-hover"
 					:ripple="false"
@@ -69,7 +85,7 @@ const changeOrderBy = (orderBy: string): void => {
 							:key="k"
 							clickable
 							v-close-popup
-							@click="() => changeOrderBy(k)"
+							@click="() => load(1, k)"
 						>
 							<q-item-section>
 								<q-item-label>{{ v }}</q-item-label>
@@ -82,23 +98,40 @@ const changeOrderBy = (orderBy: string): void => {
 			<section class="row q-mb-lg q-py-lg">
 				<div v-if="posts" class="col-12 col-md-8">
 					<div class="fixed-container">
-						<PostCard
-							v-for="post in posts"
-							:key="post.id"
-							:post="post"
-							class="q-mb-xl"
-						/>
+						<section v-if="posts.length > 0">
+							<PostCard
+								v-for="post in posts"
+								:key="post.id"
+								:post="post"
+								class="q-mb-xl"
+							/>
+						</section>
+						<section v-else>
+							<p class="text-body1" v-if="search">
+								Nenhum post encontrado para "
+								<b>{{ search }}</b>
+								". Tente mudar as palavras para encontrar oque deseja.
+							</p>
+							<p class="text-body1" v-else>
+								Não foi dessa vez, volte mais tarde para encontrar postagens
+								surpreendentes.
+							</p>
+						</section>
 
-						<div class="full-width row justify-center q-mb-xl">
+						<div
+							v-if="pagination && (pagination.rowsNumber || 0) > 0 && totalPages > 1"
+							class="full-width row justify-center q-mb-xl"
+						>
 							<q-pagination
 								active-design="unelevated"
 								active-color="black"
 								flat
-								:model-value="2"
+								:model-value="pagination.page ?? 1"
 								color="black"
-								:max="100"
+								:max="totalPages"
 								:max-pages="6"
 								direction-links
+								@update:model-value="(page) => load(page)"
 								boundary-links
 								icon-first="skip_previous"
 								icon-last="skip_next"
@@ -116,8 +149,9 @@ const changeOrderBy = (orderBy: string): void => {
 							:items="categories"
 							title="Descubra categorias"
 						/>
+
 						<ChipGroup
-							v-if="tags "
+							v-if="tags"
 							route-name="tags"
 							:items="tags"
 							title="Descubra tags"

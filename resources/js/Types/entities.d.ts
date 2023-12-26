@@ -1,3 +1,14 @@
+interface PageProps {
+	[key: string];
+	auth: {
+		user?: User;
+	};
+	flash: {
+		success?: string;
+		error?: string;
+	};
+}
+
 interface Response<T> {
 	success: boolean;
 	message: string;
@@ -34,6 +45,7 @@ interface User extends UserBasic {
 	role: string;
 	email: string;
 	description: string;
+	last_login_at?: string;
 }
 
 interface Post extends Timestamps {

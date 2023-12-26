@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\JsonPattern;
 use App\Models\Category;
-use App\Models\Post;
-use App\Models\Tag;
 use App\Rules\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Intervention\Image\Facades\Image;
 use Inertia\Response;
 
 class CategoryController extends Controller

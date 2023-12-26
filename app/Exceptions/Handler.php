@@ -59,8 +59,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
+        $route = Route::current();
         $response = parent::render($request, $e);
-        $type = in_array('auth', Route::current()->gatherMiddleware()) ? 'manager' : 'guest';
+        $type = in_array('auth', $route ? $route->gatherMiddleware() : []) ? 'manager' : 'guest';
         $status = $response->getStatusCode();
 
         if (!app()->environment(['testing']) && in_array($status, [404, 403, 500])) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Meta;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
@@ -17,14 +18,31 @@ class HomeController extends Controller
     public function show(Request $request): Response
     {
         $request->validate([
-            'orderBy' => "nullable|in:popular,recent"
+            'search' => "nullable|string",
+            'sortBy' => 'nullable|string|in:popular,recent',
+            'descending' => 'nullable|string:true,false',
+            'rowsPerPage' => 'nullable|numeric|min:5|max:50'
         ]);
 
-        $orderBy = $request->input('orderBy', 'recent');
+        $sortBy = $request->input('sortBy', 'popular');
+        $descending = $request->input('descending', true) == true;
+        $rowsPerPage = $request->input('rowsPerPage', 20);
+        $search = $request->input('search');
 
-        $query = Post::with(['category', 'tags', 'author'])->take(20);
+        $query = Post::withBasic()->published();
 
-        switch ($orderBy) {
+        if (!empty($search)) {
+            $query->where(fn ($q) => 
+                $q->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('slug', 'LIKE', "%{$search}%")
+                    ->orWhere('caption', 'LIKE', "%{$search}%")
+                    ->orWhereHas('category', fn ($q) => $q->where('categories.name', 'LIKE', "%{$search}%"))
+                    ->orWhereHas('author', fn ($q) => $q->where('users.name', 'LIKE', "%{$search}%"))
+                    ->orWhereHas('tags', fn ($q) => $q->where('tags.name', 'LIKE', "%{$search}%"))
+            );
+        }
+
+        switch ($sortBy) {
             case 'popular':
                 $query->popular();
                 break;
@@ -34,11 +52,21 @@ class HomeController extends Controller
                 break;
         }
 
+        $posts = $query->paginate(20);
+
+        Meta::addMeta('description', 'Invista com inteligência e conquiste a independência financeira. Descubra como investir de forma inteligente e conquistar a liberdade financeira que você sempre sonhou.');
+
         return Inertia::render('Home', [
-            'posts' => $query->get(),
+            'posts' => $posts->items(),
+            'pagination' => [
+                'sortBy' => $sortBy,
+                'descending' => $descending,
+                'rowsPerPage' => $rowsPerPage,
+                'rowsNumber' => $posts->total(),
+                'page' => $posts->currentPage(),
+            ],
             'categories' => Category::query()->popular()->take(7)->get(),
             'tags' => Tag::query()->popular()->take(7)->get(),
-            'orderBy' => $orderBy
         ]);
     }
     

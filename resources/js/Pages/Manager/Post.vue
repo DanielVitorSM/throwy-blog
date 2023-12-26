@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
+import { Head, useForm, router, Link } from "@inertiajs/vue3";
 import { useQuasar, type QEditorProps, QSelect, QEditor } from "quasar";
-import { ref, type PropType } from "vue";
+import { ref, type PropType, computed } from "vue";
 import Cropper from "@/Components/Cropper.vue";
 import { formatDatetime } from "@/Utils/functions";
 import ExpansionCard from "@/Components/ExpansionCard.vue";
@@ -68,7 +68,7 @@ const toolbar: QEditorProps["toolbar"] = [
 			options: ["size-1", "size-2", "size-3", "size-4", "size-5", "size-6", "size-7"]
 		}
 	],
-	["undo", "redo", "print", "fullscreen", "viewsource"]
+	["undo", "redo", "fullscreen", "viewsource"]
 ];
 
 const addCategory = () => $q.dialog({ component: EditCategory });
@@ -98,7 +98,6 @@ const onFilterTags = (
 };
 
 const save = () => {
-	const _method = post ? "put" : "post";
 	const formRoute = post ? route("posts.update", { id: post.id }) : route("posts.store");
 	const headers = post ? { "X-Reload": "true" } : undefined;
 	form.post(formRoute, { headers });
@@ -126,14 +125,16 @@ const onPaste = (evt: any) => {
 		onPasteStripFormattingIEPaste = false;
 	}
 };
+
+const title = computed(() => (post ? "Editar post" : "Novo post"));
 </script>
 
 <template>
-	<Head title="Novo post" />
+	<Head :title="title" />
 
 	<AuthenticatedLayout>
 		<section class="q-mb-lg row items-center">
-			<h2 class="text-bold text-h4 q-ma-none">{{ post ? "Editar" : "Novo" }} post</h2>
+			<h2 class="text-bold text-h4 q-ma-none">{{ title }}</h2>
 		</section>
 
 		<section>
@@ -152,7 +153,7 @@ const onPaste = (evt: any) => {
 								:error-message="form.errors.title"
 							/>
 						</div>
-						
+
 						<div class="col-12" v-if="post">
 							<q-input
 								hide-bottom-space
@@ -298,6 +299,20 @@ const onPaste = (evt: any) => {
 										"
 									/>
 									<q-space />
+									<Link
+										v-if="post"
+										:href="$route('blog.show', { slug: post?.slug })"
+										class="q-mr-sm"
+									>
+										<q-btn
+											:disable="form.processing"
+											dense
+											round
+											unelevated
+											icon="visibility"
+											size="md"
+										/>
+									</Link>
 									<q-btn
 										:percentage="form.progress ? form.progress.percentage : 100"
 										:disable="form.processing"

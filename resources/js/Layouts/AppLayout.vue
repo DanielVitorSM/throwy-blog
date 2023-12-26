@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import AppLogo from "@/Components/AppLogo.vue";
+import { router, Link } from "@inertiajs/vue3";
 
 const leftDrawerOpen = ref(false);
-const search = ref<string>("");
+const params = new URLSearchParams(window.location.search);
+const search = ref<string>(params.get('search') ?? '');
 
 const toggleLeftDrawer = () => {
 	leftDrawerOpen.value = !leftDrawerOpen.value;
 };
+
+watch(search, (val: string) => {
+	router.get(route("home"), { search: val });
+});
 </script>
 
 <template>
@@ -15,14 +21,16 @@ const toggleLeftDrawer = () => {
 		<q-header class="bg-grey-2 text-dark">
 			<q-toolbar class="container q-px-sm q-py-md">
 				<div class="row items-center">
-					<AppLogo />
+					<Link :href="$route('home')">
+						<AppLogo />
+					</Link>
 				</div>
 
 				<q-space />
 
-				<div v-if="!$q.screen.lt.md" class="row q-gutter-xs">
-					<q-btn flat class="no-hover" label="Home" no-caps />
-					<q-btn flat class="no-hover" label="Blog" no-caps />
+				<!-- <div v-if="!$q.screen.lt.md" class="row q-gutter-xs"> -->
+					<!-- <q-btn flat class="no-hover" label="Home" no-caps /> -->
+					<!-- <q-btn flat class="no-hover" label="Blog" no-caps />
 					<q-btn flat class="no-hover" label="Sobre nós" no-caps />
 					<q-btn-dropdown
 						:ripple="false"
@@ -39,14 +47,14 @@ const toggleLeftDrawer = () => {
 							</q-item>
 						</q-list>
 					</q-btn-dropdown>
-				</div>
+				</div> -->
 
 				<div v-if="!$q.screen.lt.sm" class="q-ml-md">
 					<q-input
 						hide-bottom-space
 						outlined
 						rounded
-						debounce="500"
+						debounce="2000"
 						placeholder="Pesquisar..."
 						v-model="search"
 						dense
@@ -57,14 +65,14 @@ const toggleLeftDrawer = () => {
 					</q-input>
 				</div>
 
-				<q-btn
+				<!-- <q-btn
 					flat
 					@click="toggleLeftDrawer"
 					round
 					color="dark"
 					icon="menu"
 					v-if="$q.screen.lt.md"
-				/>
+				/> -->
 
 				<!-- <q-btn round color="black" size="12px">
                     <q-avatar size="32px">
@@ -74,7 +82,7 @@ const toggleLeftDrawer = () => {
 			</q-toolbar>
 		</q-header>
 
-		<q-drawer
+		<!-- <q-drawer
 			behavior="mobile"
 			v-model="leftDrawerOpen"
 			side="left"
@@ -118,7 +126,7 @@ const toggleLeftDrawer = () => {
 					</q-item>
 				</q-list>
 			</q-scroll-area>
-		</q-drawer>
+		</q-drawer> -->
 
 		<q-page-container class="relative-position" v-bind="$attrs">
 			<slot></slot>

@@ -9,6 +9,7 @@ import { Head } from "@inertiajs/vue3";
 	<AuthenticatedLayout>
 		<section class="q-mb-md">
 			<h2 class="text-bold text-h4 q-ma-none">Dashboard</h2>
+			<p>Por enquanto não foi adicionado nenhuma funcionalidade aqui</p>
 		</section>
 	</AuthenticatedLayout>
 </template>

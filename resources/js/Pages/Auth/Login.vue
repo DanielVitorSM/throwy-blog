@@ -5,7 +5,6 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 
 defineProps({
 	canResetPassword: Boolean,
-	status: String
 });
 
 const form = useForm({
@@ -28,10 +27,6 @@ const showPassword = ref(false);
 		<Head title="Entrar"></Head>
 
 		<q-page class="column">
-			<div v-if="status">
-				{{ status }}
-			</div>
-
 			<section class="row full-height col-grow justify-center items-center">
 				<div class="q-col-gutter-md fixed-container">
 					<h1 class="q-ma-none text-bold text-h4">Entrar</h1>
@@ -67,7 +62,9 @@ const showPassword = ref(false);
 							v-model="form.email"
 							label="Email"
 							lazy-rules
-							:rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
+							:error="Boolean(form.errors.email)"
+							:error-message="form.errors.email"
+							:disable="form.processing"
 						/>
 
 						<q-input
@@ -77,7 +74,9 @@ const showPassword = ref(false);
 							label="Senha"
 							:type="showPassword ? 'text' : 'password'"
 							lazy-rules
-							:rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
+							:error="Boolean(form.errors.password)"
+							:error-message="form.errors.password"
+							:disable="form.processing"
 						>
 							<template v-slot:append>
 								<q-icon
@@ -88,9 +87,9 @@ const showPassword = ref(false);
 							</template>
 						</q-input>
 
-						<div class="row items-center justify-between">
+						<div class="row items-center justify-between" v-if="canResetPassword">
 							<q-toggle v-model="form.remember" label="Manter-me conectado" />
-							<a href="" class="text-primary text-right">Esqueceu a senha?</a>
+							<!-- <a href="" class="text-primary text-right">Esqueceu a senha?</a> -->
 						</div>
 
 						<q-btn
@@ -99,6 +98,7 @@ const showPassword = ref(false);
 							unelevated
 							label="Entrar"
 							type="submit"
+							:disable="form.processing"
 							color="primary"
 						/>
 					</q-form>

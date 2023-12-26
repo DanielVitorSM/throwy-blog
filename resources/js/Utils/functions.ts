@@ -85,7 +85,7 @@ export const validateFile = (
  * Transforma a data do servidor em uma data legível.
  */
 export const formatDatetime = (val: string): string => {
-	if (!val) return "--/--/---- --:--:--";
+	if (!val) return "-";
 
 	return dayjs(val).format("DD/MM/YYYY HH:mm:ss");
 };

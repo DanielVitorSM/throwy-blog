@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'manager',
         ]);
 
-        if (config('app.env', 'local') === 'local') {
+        if (in_array(config('app.env', 'local'), ['local', 'testing'])) {
             $this->call([
                 TestSeeder::class,
             ]);

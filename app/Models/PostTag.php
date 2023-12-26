@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Override\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class PostTag extends Model
 {

@@ -1,93 +1,107 @@
-<script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+<script setup lang="ts">
+import { useForm, usePage } from "@inertiajs/vue3";
+import Cropper from "@/Components/Cropper.vue";
+import { computed } from "vue";
 
-const props = defineProps({
-    mustVerifyEmail: Boolean,
-    status: String,
-});
-
-const user = usePage().props.auth.user;
+const page = usePage<PageProps>();
+const user = computed(() => page.props.auth.user);
 
 const form = useForm({
-    name: user.name,
-    email: user.email,
+	_method: "PATCH",
+	name: user.value?.name ?? "",
+	email: user.value?.email ?? "",
+	slug: user.value?.slug ?? "",
+	description: user.value?.description ?? "",
+	avatar: undefined
 });
 </script>
 
 <template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Profile Information</h2>
+	<section>
+		<h4 class="text-h6 q-my-none q-mb-md">Dados pessoais</h4>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                Update your account's profile information and email address.
-            </p>
-        </header>
+		<q-form
+			style="max-width: 400px"
+			class="column items-start q-col-gutter-md"
+			@submit.prevent="form.post($route('profile.update'))"
+		>
+			<Cropper :aspect-ratio="1" v-model="form.avatar">
+				<template v-slot:button="{ getFile, previewSrc }">
+					<div class="row items-center q-gutter-md">
+						<q-avatar v-if="(user && user.avatar) || previewSrc" size="60px">
+							<img v-if="previewSrc" :src="previewSrc" />
+							<img v-else-if="user && user.avatar" :src="user.avatar" />
+						</q-avatar>
 
-        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
-            <div>
-                <InputLabel for="name" value="Name" />
+						<q-avatar v-else size="60px" icon="face" color="grey-5" />
+						<q-btn dense @click="getFile" no-caps flat color="primary">
+							{{ !(previewSrc || user?.avatar) ? "Adicionar" : "Alterar" }}
+						</q-btn>
+					</div>
+				</template>
+			</Cropper>
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+			<q-input
+				v-model="form.name"
+				label="Nome"
+				hide-bottom-space
+				dense
+				class="full-width"
+				@blur="form.clearErrors()"
+				outlined
+				:error="Boolean(form.errors.name)"
+				:error-message="form.errors.name"
+			/>
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+			<q-input
+				v-model="form.slug"
+				label="Slug"
+				class="full-width"
+				hide-bottom-space
+				dense
+				@blur="form.clearErrors()"
+				outlined
+				:error="Boolean(form.errors.slug)"
+				:error-message="form.errors.slug"
+			/>
 
-            <div>
-                <InputLabel for="email" value="Email" />
+			<q-input
+				v-model="form.email"
+				label="Email"
+				hide-bottom-space
+				dense
+				class="full-width"
+				@blur="form.clearErrors()"
+				outlined
+				type="email"
+				:error="Boolean(form.errors.email)"
+				:error-message="form.errors.email"
+			/>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+			<q-input
+				v-model="form.description"
+				label="Descrição"
+				type="textarea"
+				:rows="3"
+				hide-bottom-space
+				class="full-width"
+				dense
+				@blur="form.clearErrors()"
+				outlined
+				:error="Boolean(form.errors.description)"
+				:error-message="form.errors.description"
+			/>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div v-if="props.mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
-                    Your email address is unverified.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        as="button"
-                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    >
-                        Click here to re-send the verification email.
-                    </Link>
-                </p>
-
-                <div
-                    v-show="props.status === 'verification-link-sent'"
-                    class="mt-2 font-medium text-sm text-green-600 dark:text-green-400"
-                >
-                    A new verification link has been sent to your email address.
-                </div>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
-
-                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                </Transition>
-            </div>
-        </form>
-    </section>
+			<div>
+				<q-btn
+					:disable="form.processing"
+					no-caps
+					label="Salvar"
+					color="primary"
+					type="submit"
+					unelevated
+				/>
+			</div>
+		</q-form>
+	</section>
 </template>

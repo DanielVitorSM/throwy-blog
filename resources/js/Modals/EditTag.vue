@@ -11,15 +11,15 @@ const form = useForm({
 	slug: ""
 });
 
-const { categoryId } = defineProps({
-	categoryId: String
+const { tagId } = defineProps({
+	tagId: String
 });
 
 onMounted(() => {
-	if (categoryId) {
+	if (tagId) {
 		loading.value = true;
 		axios
-			.get<Response<Category>>(route("categories.show", { id: categoryId }))
+			.get<Response<Tag>>(route("tags.show", { id: tagId }))
 			.then((res) => {
 				const { body } = res.data;
 
@@ -32,10 +32,10 @@ onMounted(() => {
 });
 
 const save = () => {
-	const formRoute = categoryId
-		? route("categories.update", { id: categoryId })
-		: route("categories.store");
-	const method = categoryId ? "put" : "post";
+	const formRoute = tagId
+		? route("tags.update", { id: tagId })
+		: route("tags.store");
+	const method = tagId ? "put" : "post";
 
 	form[method](formRoute, {
 		onSuccess: () => onDialogOK(),
@@ -46,7 +46,7 @@ const save = () => {
 };
 
 const remove = () => {
-	form.delete(route("categories.destroy", { id: categoryId }), {
+	form.delete(route("tags.destroy", { id: tagId }), {
 		onSuccess: () => onDialogOK(),
 		headers: {
 			"X-Reload": "1"
@@ -60,7 +60,7 @@ const remove = () => {
 		<q-card style="max-width: 350px; width: 100%">
 			<q-card-section>
 				<div class="text-h6">
-					{{ categoryId ? "Editar categoria" : "Adicionar categoria" }}
+					{{ tagId ? "Editar tag" : "Adicionar tag" }}
 				</div>
 			</q-card-section>
 
@@ -81,7 +81,7 @@ const remove = () => {
 					/>
 
 					<q-input
-						v-if="categoryId"
+						v-if="tagId"
 						dense
 						@blur="form.clearErrors()"
 						v-model="form.slug"
@@ -100,7 +100,7 @@ const remove = () => {
 			<q-card-actions>
 				<q-btn
 					:disable="form.processing"
-					v-if="categoryId"
+					v-if="tagId"
 					color="negative"
 					@click="remove"
 					flat

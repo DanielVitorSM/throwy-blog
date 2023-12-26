@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import AppLogo from "@/Components/AppLogo.vue";
-import { Link, usePage } from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import { showErrorNotify, showSuccessNotify } from "@/Utils/notify";
 
 const leftDrawerOpen = ref(false);
-const page = usePage();
+const page = usePage<PageProps>();
 
 const toggleLeftDrawer = () => (leftDrawerOpen.value = !leftDrawerOpen.value);
 
@@ -41,10 +41,32 @@ const routes: Route[] = [
 			{
 				title: "Categorias",
 				name: "categories.index"
+			},
+			{
+				title: "Tags",
+				name: "tags.index"
+			}
+		]
+	},
+	{
+		title: "Usuários",
+		name: "users.index",
+		include: ["users.show", "users.create", "users.edit"],
+		icon: "group",
+		children: [
+			{
+				title: "Todos os usuários",
+				name: "users.index"
+			},
+			{
+				title: "Adicionar usuário",
+				name: "users.create"
 			}
 		]
 	}
 ];
+
+const user = computed(() => page.props.auth.user ?? null);
 
 const showFlashMessages = (props: any) => {
 	const flash = props.flash;
@@ -92,11 +114,47 @@ const verifyRouteIsActive = (rt: Route) => {
 
 				<q-space />
 
-				<q-btn round color="black" size="12px">
-					<q-avatar size="32px">
-						<img src="https://github.com/danielvitorsm.png" />
-					</q-avatar>
-				</q-btn>
+				<div v-if="user">
+					<q-btn-dropdown
+						flat
+						unelevated
+						dense
+						no-caps
+						:ripple="false"
+						class="text-body2 q-mr-sm"
+						:label="user.name"
+					>
+						<q-list dense>
+							<Link :href="$route('profile.edit')">
+								<q-item dense clickable v-close-popup>
+									<q-item-section>Editar</q-item-section>
+								</q-item>
+							</Link>
+							<q-separator />
+
+							<q-item
+								@click="router.delete($route('profile.destroy'))"
+								dense
+								clickable
+								class="text-red-8"
+								v-close-popup
+							>
+								<q-item-section>Sair</q-item-section>
+							</q-item>
+						</q-list>
+					</q-btn-dropdown>
+					<q-btn round color="black" size="12px">
+						<q-avatar
+							font-size="12px"
+							size="34px"
+							:icon="!user.avatar ? 'face' : undefined"
+							color="grey-5"
+							text-color="black"
+						>
+							<img v-if="user.avatar" :src="user.avatar" />
+						</q-avatar>
+					</q-btn>
+				</div>
 			</q-toolbar>
 		</q-header>
 
@@ -119,8 +177,10 @@ const verifyRouteIsActive = (rt: Route) => {
 							:href="$route(route.name)"
 						>
 							<q-expansion-item
-								icon="article"
-								label="Posts"
+								:icon="route.icon"
+								:label="route.title"
+								expand-icon-toggle
+								hide-expand-icon
 								:header-class="
 									verifyRouteIsActive(route) ? 'bg-black text-white' : 'bg-white'
 								"

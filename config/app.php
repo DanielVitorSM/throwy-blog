@@ -17,6 +17,8 @@ return [
 
     'name' => env('APP_NAME', 'Throwy Co.'),
 
+    'google-analytics-id' => env('GOOGLE_ANALYTICS_ID', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

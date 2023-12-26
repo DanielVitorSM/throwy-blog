@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Meta;
 use App\Models\Post;
 use App\Models\PostView;
 use Illuminate\Http\Request;
@@ -42,6 +43,13 @@ class BlogController extends Controller
                 'agent' => $agent
             ]);
         }
+
+        $keywords = $post->tags->map(fn ($e) => $e->name)->toArray();
+        Meta::addMeta('title', $post->title . " - " . config('app.name', 'Throwy'));
+        Meta::addMeta('description', $post->caption);
+        Meta::addMeta('robots', 'index, follow');
+        Meta::addMeta('googlebot', 'index, follow');
+        Meta::addMeta('keywords', join(', ', $keywords));
 
         return Inertia::render('Post', [
             'post' => $post,

@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,12 +34,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [HomeController::class, 'dashboard'])->name('dashboard');
         Route::resource('posts', PostController::class);
         Route::post('posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
+        Route::resource('users', UserController::class);
+        Route::post('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
         Route::resource('categories', CategoryController::class);
         Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
         Route::resource('tags', TagController::class);
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/change-password', [ProfileController::class, 'changePassword'])->name('profile.change_password');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
