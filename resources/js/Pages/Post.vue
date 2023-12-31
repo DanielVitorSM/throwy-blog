@@ -70,7 +70,7 @@ defineProps({
 						<div class="row items-center q-gutter-lg">
 							<q-avatar
 								size="60px"
-								:icon="post.author.avatar ? '' : 'face'"
+								:icon="post.author.avatar ? undefined : 'face'"
 								color="grey-5"
 							>
 								<img v-if="post.author.avatar" :src="post.author.avatar" />
