@@ -80,7 +80,7 @@ class Post extends Model
             $iterator = 0;
 
             while ($unique === false) {
-                $post->slug = Str::slug($post->name, '-', 'pt');
+                $post->slug = Str::slug($post->title, '-', 'pt');
 
                 if ($iterator > 0)
                     $post->slug .= "-{$iterator}";

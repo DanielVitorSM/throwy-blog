@@ -49,11 +49,13 @@ class BlogController extends Controller
         Meta::addMeta('description', $post->caption);
         Meta::addMeta('robots', 'index, follow');
         Meta::addMeta('googlebot', 'index, follow');
-        Meta::addMeta('keywords', join(', ', $keywords));
+        
+        if (!empty($keywords))
+            Meta::addMeta('keywords', join(', ', $keywords));
 
         return Inertia::render('Post', [
             'post' => $post,
-            'similarPosts' => Post::query()->similar($post)->withBasic()->take(3)->get(),
+            'similarPosts' => Post::query()->similar($post)->withBasic()->published()->take(3)->get(),
         ]);
     }
 }

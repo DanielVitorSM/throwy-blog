@@ -55,6 +55,9 @@ class HomeController extends Controller
         $posts = $query->paginate(20);
 
         Meta::addMeta('description', 'Invista com inteligência e conquiste a independência financeira. Descubra como investir de forma inteligente e conquistar a liberdade financeira que você sempre sonhou.');
+        Meta::addMeta('title', 'O impulso certo para sua liberdade financeira' . " - " . config('app.name', 'Throwy'));
+        Meta::addMeta('robots', 'index, follow');
+        Meta::addMeta('googlebot', 'index, follow');
 
         return Inertia::render('Home', [
             'posts' => $posts->items(),

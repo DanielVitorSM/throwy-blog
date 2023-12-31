@@ -44,7 +44,7 @@ const load = (page: number, sortBy?: string): void => {
 </script>
 
 <template>
-	<Head title="Home"></Head>
+	<Head title="O impulso certo para sua liberdade financeira"></Head>
 
 	<AppLayout
 		style="
@@ -108,9 +108,8 @@ const load = (page: number, sortBy?: string): void => {
 						</section>
 						<section v-else>
 							<p class="text-body1" v-if="search">
-								Nenhum post encontrado para "
-								<b>{{ search }}</b>
-								". Tente mudar as palavras para encontrar oque deseja.
+								Nenhum post encontrado para "<b>{{ search }}</b>". 
+								Tente mudar as palavras para encontrar oque deseja.
 							</p>
 							<p class="text-body1" v-else>
 								Não foi dessa vez, volte mais tarde para encontrar postagens
@@ -144,14 +143,14 @@ const load = (page: number, sortBy?: string): void => {
 				<div class="col-4 row justify-end" v-if="$q.screen.gt.sm">
 					<section style="position: sticky; top: 80px; align-self: flex-start">
 						<ChipGroup
-							v-if="categories"
+							v-if="categories && categories.length > 0"
 							route-name="categories"
 							:items="categories"
 							title="Descubra categorias"
 						/>
 
 						<ChipGroup
-							v-if="tags"
+							v-if="tags && tags.length > 0"
 							route-name="tags"
 							:items="tags"
 							title="Descubra tags"
