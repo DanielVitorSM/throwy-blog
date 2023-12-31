@@ -55,7 +55,7 @@ class BlogController extends Controller
 
         return Inertia::render('Post', [
             'post' => $post,
-            'similarPosts' => Post::query()->similar($post)->withBasic()->published()->take(3)->get(),
+            'similarPosts' => Post::query()->where('id', '!=', $post->id)->similar($post)->withBasic()->published()->take(3)->get(),
         ]);
     }
 }
