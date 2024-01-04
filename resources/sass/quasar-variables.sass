@@ -27,12 +27,6 @@ $google: #DB4437
 *
     font-family: 'Ubuntu'
 
-a
-    text-decoration: none
-
-a:hover
-    text-decoration: underline
-
 .container
     max-width: 1200px
     margin: 0 auto
@@ -50,15 +44,23 @@ a:hover
     display: none
 
 a
+    color: $primary
+    text-decoration: none !important
+
+a.text-reset
     color: inherit !important
-    text-decoration: inherit !important
+    text-decoration: none !important
+
+a.text-reset:hover
+    cursor: pointer !important
+    text-decoration: none !important
+
+a:hover
+    cursor: pointer !important
+    text-decoration: underline !important
 
     *
         text-decoration: none !important
-
-a:hover
-    .text-h5, .text-h6
-        text-decoration: underline !important
 
 .fixed-container
     max-width: 700px

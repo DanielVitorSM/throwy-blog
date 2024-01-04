@@ -4,6 +4,7 @@ import AppLogo from "@/Components/AppLogo.vue";
 import { Link, router, usePage } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import { showErrorNotify, showSuccessNotify } from "@/Utils/notify";
+import dayjs from "dayjs";
 
 const leftDrawerOpen = ref(false);
 const page = usePage<PageProps>();
@@ -125,7 +126,7 @@ const verifyRouteIsActive = (rt: Route) => {
 						:label="user.name"
 					>
 						<q-list dense>
-							<Link :href="$route('profile.edit')">
+							<Link class="text-reset" :href="$route('profile.edit')">
 								<q-item dense clickable v-close-popup>
 									<q-item-section>Editar</q-item-section>
 								</q-item>
@@ -173,6 +174,7 @@ const verifyRouteIsActive = (rt: Route) => {
 				<q-list padding>
 					<div v-for="(route, i) in routes" :key="i">
 						<Link
+							class="text-reset"
 							v-if="route.children && route.children.length > 0"
 							:href="$route(route.name)"
 						>
@@ -190,6 +192,7 @@ const verifyRouteIsActive = (rt: Route) => {
 								<Link
 									v-for="(child, j) in route.children"
 									:key="j"
+									class="text-reset"
 									:href="$route(child.name)"
 								>
 									<q-item
@@ -205,7 +208,7 @@ const verifyRouteIsActive = (rt: Route) => {
 							</q-expansion-item>
 						</Link>
 
-						<Link v-else :href="$route(route.name)">
+						<Link class="text-reset" v-else :href="$route(route.name)">
 							<q-item
 								:active="verifyRouteIsActive(route)"
 								active-class="text-primary"
@@ -251,7 +254,9 @@ const verifyRouteIsActive = (rt: Route) => {
 
 		<q-footer class="bg-white text-dark">
 			<q-toolbar class="text-center justify-center">
-				<small>Throwy 2023 &copy; Todos os direitos reservados</small>
+				<small>
+					Throwy {{ dayjs().format("YYYY") }} &copy; Todos os direitos reservados
+				</small>
 			</q-toolbar>
 		</q-footer>
 	</q-layout>

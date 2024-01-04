@@ -39,6 +39,7 @@ defineProps({
 				v-for="(item, i) in items"
 				:key="i"
 				:data="{ search: item[labelName] }"
+				class="text-reset"
 				:href="`${$route('home')}`"
 			>
 				<q-chip class="q-ml-none bg-gray-6">

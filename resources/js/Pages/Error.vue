@@ -48,7 +48,7 @@ const message = computed(() => {
 		>
 			<span class="text-h1 text-bold q-mb-md">{{ status }}</span>
 			<p class="q-ma-none text-h4 text-thin q-mb-lg">{{ message }}</p>
-			<Link :href="$route('home')">
+			<Link class="text-reset" :href="$route('home')">
 				<q-btn label="Página inicial" color="primary" unelevated no-caps />
 			</Link>
 		</section>

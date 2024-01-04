@@ -111,7 +111,7 @@ const onRequest = (props: any) => {
 				/>
 			</q-btn-group>
 
-			<Link :href="$route('posts.create')">
+			<Link class="text-reset" :href="$route('posts.create')">
 				<q-btn color="primary" :disable="loading" label="Novo" unelevated no-caps />
 			</Link>
 		</section>
@@ -143,12 +143,12 @@ const onRequest = (props: any) => {
 						<q-btn icon="more_horiz" flat round>
 							<q-menu>
 								<q-list dense style="min-width: 100px">
-									<Link :href="$route('blog.show', { slug: props.value.slug })">
+									<Link class="text-reset" :href="$route('blog.show', { slug: props.value.slug })">
 										<q-item dense clickable v-close-popup>
 											<q-item-section>Visualizar</q-item-section>
 										</q-item>
 									</Link>
-									<Link :href="$route('posts.edit', { id: props.value.id })">
+									<Link class="text-reset" :href="$route('posts.edit', { id: props.value.id })">
 										<q-item dense clickable v-close-popup>
 											<q-item-section>Editar</q-item-section>
 										</q-item>

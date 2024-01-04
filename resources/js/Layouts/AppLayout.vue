@@ -2,10 +2,11 @@
 import { ref, watch } from "vue";
 import AppLogo from "@/Components/AppLogo.vue";
 import { router, Link } from "@inertiajs/vue3";
+import dayjs from "dayjs";
 
 const leftDrawerOpen = ref(false);
 const params = new URLSearchParams(window.location.search);
-const search = ref<string>(params.get('search') ?? '');
+const search = ref<string>(params.get("search") ?? "");
 
 const toggleLeftDrawer = () => {
 	leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -21,7 +22,7 @@ watch(search, (val: string) => {
 		<q-header class="bg-grey-2 text-dark">
 			<q-toolbar class="container q-px-sm q-py-md">
 				<div class="row items-center">
-					<Link :href="$route('home')">
+					<Link class="text-reset" :href="$route('home')">
 						<AppLogo />
 					</Link>
 				</div>
@@ -29,8 +30,8 @@ watch(search, (val: string) => {
 				<q-space />
 
 				<!-- <div v-if="!$q.screen.lt.md" class="row q-gutter-xs"> -->
-					<!-- <q-btn flat class="no-hover" label="Home" no-caps /> -->
-					<!-- <q-btn flat class="no-hover" label="Blog" no-caps />
+				<!-- <q-btn flat class="no-hover" label="Home" no-caps /> -->
+				<!-- <q-btn flat class="no-hover" label="Blog" no-caps />
 					<q-btn flat class="no-hover" label="Sobre nós" no-caps />
 					<q-btn-dropdown
 						:ripple="false"
@@ -155,7 +156,7 @@ watch(search, (val: string) => {
 					class="col-12 col-sm-6 col-md-4 offset-md-4"
 					:class="{ 'text-center': !$q.screen.sm }"
 				>
-					Throwy 2023 &copy; Todos os direitos reservados
+					Throwy {{ dayjs().format("YYYY") }} &copy; Todos os direitos reservados
 				</small>
 				<div v-if="$q.screen.gt.xs" class="col-sm-6 col-md-4 text-right">
 					Ícones por

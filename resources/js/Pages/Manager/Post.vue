@@ -303,7 +303,7 @@ const title = computed(() => (post ? "Editar post" : "Novo post"));
 									<Link
 										v-if="post"
 										:href="$route('blog.show', { slug: post?.slug })"
-										class="q-mr-sm"
+										class="q-mr-sm text-reset"
 									>
 										<q-btn
 											:disable="form.processing"
