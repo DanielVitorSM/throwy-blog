@@ -95,7 +95,7 @@ defineProps({
 					<ShareButtons v-if="$q.screen.gt.sm" :slug="post.slug" :title="post.title" />
 				</section>
 			</section>
-			<section class="row justify-center" v-if="similarPosts">
+			<section class="row justify-center" v-if="similarPosts && similarPosts.length > 0">
 				<div class="fixed-container">
 					<section class="column">
 						<h2 class="text-h4">Postagens relacionadas</h2>

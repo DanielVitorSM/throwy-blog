@@ -161,7 +161,7 @@ watch(search, (val: string) => {
 					Ícones por
 					<a href="https://www.flaticon.com" class="text-primary">Flaticon</a>
 					e
-					<a href="freepik.com" class="text-primary">Flaticon</a>
+					<a href="https://freepik.com" class="text-primary">Freepik</a>
 				</div>
 			</q-toolbar>
 			<q-toolbar v-if="!$q.screen.gt.xs" class="row justify-center">
@@ -169,7 +169,7 @@ watch(search, (val: string) => {
 					Ícones por
 					<a href="https://www.flaticon.com" class="text-primary">Flaticon</a>
 					e
-					<a href="freepik.com" class="text-primary">Flaticon</a>
+					<a href="https://freepik.com" class="text-primary">Freepik</a>
 				</div>
 			</q-toolbar>
 		</q-footer>

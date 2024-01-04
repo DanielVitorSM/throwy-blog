@@ -66,7 +66,8 @@ const toolbar: QEditorProps["toolbar"] = [
 			fixedIcon: true,
 			list: "no-icons",
 			options: ["size-1", "size-2", "size-3", "size-4", "size-5", "size-6", "size-7"]
-		}
+		},
+		'removeFormat'
 	],
 	["undo", "redo", "fullscreen", "viewsource"]
 ];
@@ -182,7 +183,7 @@ const title = computed(() => (post ? "Editar post" : "Novo post"));
 							/>
 						</div>
 
-						<div class="col-12">
+						<div class="col-12 fixed-toolbar">
 							<q-editor
 								ref="editorRef"
 								hide-bottom-space
