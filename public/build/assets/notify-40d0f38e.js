@@ -1,1 +1,0 @@
-import{bA as s}from"./app-ec6a25f7.js";const e=(o,t)=>{if(typeof o=="string")return s.create({...t,message:o});s.create({...t,...o})},r=o=>{e(o,{position:"bottom-right",type:"negative",group:"error"})},f=o=>{e(o,{position:"bottom-right",type:"positive",group:"success"})};export{r as a,f as s};
