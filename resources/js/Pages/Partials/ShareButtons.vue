@@ -51,6 +51,7 @@ const copyShareLink = () =>
 				:key="type"
 				:href="shareOn(type, title, shareLink) ?? '/'"
 				target="_blank"
+				class="text-reset"
 			>
 				<q-btn :icon="icon" round unelevated flat />
 			</a>

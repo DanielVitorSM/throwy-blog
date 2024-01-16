@@ -31,7 +31,7 @@ defineProps({
 						{{ post.category.name }}
 					</q-badge>
 
-					<h1 class="text-h3 text-bold q-mt-none q-mb-md">{{ post.title }}</h1>
+					<h1 class="text-bold q-mt-none q-mb-md">{{ post.title }}</h1>
 
 					<p class="text-body1">{{ post.caption }}</p>
 					<ShareButtons
