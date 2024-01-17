@@ -85,16 +85,15 @@ class PostController extends Controller
                 $slug = Str::slug($tag, '-', 'pt');
                 $tagModel = Tag::query()->where('slug', $slug)->orWhere('name', $tag)->select('id')->first();
 
-                if (!empty($tagModel)) {
-                    PostTag::create(['post_id' => $post->id, 'tag_id' => $tagModel->id]);
-                } else {
-                    $post->tags()->create([
+                if (empty($tagModel)) {
+                    $tagModel = Tag::create([
                         'name' => $tag,
                         'slug' => $slug
                     ]);
                 }
-            }
 
+                PostTag::create(['post_id' => $post->id, 'tag_id' => $tagModel->id]);
+            }
         }
 
         $response = Redirect::route('posts.index');
