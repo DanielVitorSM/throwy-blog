@@ -34,7 +34,8 @@ const form = useForm({
 	category_id: post?.category.id ?? null,
 	tags: post?.tags.map((e) => e.name) ?? [],
 	banner: undefined,
-	published: post?.published ?? false
+	published: post?.published ?? false,
+	published_at: post?.published_at ?? null
 });
 
 const toolbar: QEditorProps["toolbar"] = [
@@ -67,7 +68,7 @@ const toolbar: QEditorProps["toolbar"] = [
 			list: "no-icons",
 			options: ["size-1", "size-2", "size-3", "size-4", "size-5", "size-6", "size-7"]
 		},
-		'removeFormat'
+		"removeFormat"
 	],
 	["undo", "redo", "fullscreen", "viewsource"]
 ];
@@ -237,14 +238,37 @@ const title = computed(() => (post ? "Editar post" : "Novo post"));
 								</div>
 
 								<div
-									v-if="post && post.published_at"
+									v-if="form.published_at"
 									class="row q-gutter-xs items-center"
 								>
 									<q-icon name="event" color="grey-8" />
 									<span>Publicado em:</span>
 									<span class="text-bold">
-										{{ formatDatetime(post.published_at) }}
+										{{ formatDatetime(form.published_at) }}
 									</span>
+									<q-btn dense icon="edit" size="sm" round flat>
+										<q-popup-edit
+											v-model="form.published_at"
+											v-slot="scope"
+											auto-save
+											class="q-pa-none"
+										>
+											<div class="row items-start">
+												<q-date
+													v-model="scope.value"
+													mask="YYYY-MM-DD HH:mm"
+													color="primary"
+													dense
+												/>
+												<q-time
+													v-model="scope.value"
+													mask="YYYY-MM-DD HH:mm"
+													color="primary"
+													dense
+												/>
+											</div>
+										</q-popup-edit>
+									</q-btn>
 								</div>
 
 								<div

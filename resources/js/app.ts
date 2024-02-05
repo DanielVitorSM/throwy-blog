@@ -3,6 +3,7 @@ import type { DefineComponent } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { Quasar, Notify, Dialog } from "quasar";
+import VueGtagPlugin from "vue-gtag";
 import quasarLang from "quasar/lang/pt-BR";
 // @ts-expect-error
 import { ZiggyVue } from "ziggy-vue";
@@ -49,6 +50,16 @@ createInertiaApp({
 			lang: quasarLang
 		});
 
+		app.use(VueGtagPlugin, {
+			appName: "Throwy",
+			pageTrackerScreenviewEnabled: true,
+			pageTrackerEnabled: true,
+			enabled: import.meta.env.PROD,
+			config: {
+				id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID
+			}
+		});
+
 		app.mount(el);
 
 		return app;
@@ -57,6 +68,6 @@ createInertiaApp({
 		color: "#FF006E",
 		delay: 250,
 		includeCSS: true,
-		showSpinner: false,
+		showSpinner: false
 	}
 });

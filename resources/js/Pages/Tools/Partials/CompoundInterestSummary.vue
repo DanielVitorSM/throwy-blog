@@ -242,7 +242,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item>
 					<q-item-section>Valor inicial</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ toCurrency(initialValue) }}
 						</b>
 					</q-item-section>
@@ -250,7 +250,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item>
 					<q-item-section>Valor mensal</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ toCurrency(monthlyValue) }}
 						</b>
 					</q-item-section>
@@ -258,7 +258,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item>
 					<q-item-section>Taxa de juros</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ toFixed(feesTax) }}% ({{ formattedTaxType }})
 						</b>
 					</q-item-section>
@@ -266,7 +266,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item>
 					<q-item-section>Período em</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ periodInMonths }} {{ formattedPeriodType }}
 						</b>
 					</q-item-section>
@@ -274,7 +274,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item v-if="ipca && ipcaType">
 					<q-item-section>IPCA Médio</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ toFixed(ipca) }}% ({{ formattedIpcaType }})
 						</b>
 					</q-item-section>
@@ -282,7 +282,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item v-if="irrf">
 					<q-item-section>Imposto de Renda Retido na Fonte</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ toFixed(getIrrfTax(periodInMonths)) }}%
 						</b>
 					</q-item-section>
@@ -296,7 +296,9 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item>
 					<q-item-section>Valor total investido</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-primary text-dark text-weight-bolder">
+						<b
+							class="text-no-wrap text-right text-body1 text-primary text-dark text-weight-bolder"
+						>
 							{{ toCurrency(summary.invested) }}
 						</b>
 					</q-item-section>
@@ -305,7 +307,7 @@ const columns = computed<QTable["columns"]>(() => {
 					<q-item-section>Total em juros</q-item-section>
 					<q-item-section side>
 						<b
-							class="text-body1 text-dark text-weight-bolder"
+							class="text-no-wrap text-right text-body1 text-dark text-weight-bolder"
 							:class="{
 								'text-green-8': summary.fees > 0,
 								'text-red-8': summary.fees < 0
@@ -318,7 +320,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item>
 					<q-item-section>Valor total bruto</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ toCurrency(summary.total) }}
 						</b>
 					</q-item-section>
@@ -326,7 +328,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item v-if="irrf">
 					<q-item-section>Valor descontado do IRRF</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-red-8 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-red-8 text-dark text-weight-bolder">
 							{{ toCurrency(summary.irrfDiscount) }}
 						</b>
 					</q-item-section>
@@ -334,7 +336,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item v-if="ipca && ipcaType">
 					<q-item-section>Desvalorização do IPCA</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-red-8 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-red-8 text-dark text-weight-bolder">
 							{{ toCurrency(summary.ipca) }}
 						</b>
 					</q-item-section>
@@ -342,7 +344,7 @@ const columns = computed<QTable["columns"]>(() => {
 				<q-item v-if="(ipca && ipcaType) || irrf">
 					<q-item-section>Valor total final</q-item-section>
 					<q-item-section side>
-						<b class="text-body1 text-dark text-weight-bolder">
+						<b class="text-no-wrap text-right text-body1 text-dark text-weight-bolder">
 							{{ toCurrency(summary.real) }}
 						</b>
 					</q-item-section>
@@ -375,7 +377,8 @@ const columns = computed<QTable["columns"]>(() => {
 									type="pie"
 									:options="{
 										...options,
-										labels: ['Valor investido', 'Valor em juros']
+										labels: ['Valor investido', 'Valor em juros'],
+										colors: ['#008FFB', '#00E396']
 									}"
 									:series="[summary.invested, summary.fees]"
 								></ApexCharts>
@@ -386,7 +389,8 @@ const columns = computed<QTable["columns"]>(() => {
 									type="pie"
 									:options="{
 										...options,
-										labels: ['Imposto de Renda', 'Valor em Juros']
+										labels: ['Imposto de Renda', 'Valor em Juros'],
+										colors: ['#FF4560', '#00E396']
 									}"
 									:series="[
 										summary.irrfDiscount * -1,

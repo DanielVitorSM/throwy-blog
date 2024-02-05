@@ -47,6 +47,7 @@ class Post extends Model
         'tags.*' => 'required|string',
         'banner' => 'nullable|file|max:4096|mimes:jpg,jpeg,png',
         'published' => 'nullable|boolean',
+        'published_at' => 'nullable|date',
     ];
 
     /**

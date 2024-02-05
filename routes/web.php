@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\UserController;
@@ -46,10 +47,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('tags', TagController::class);
     });
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/change-password', [ProfileController::class, 'changePassword'])->name('profile.change_password');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::name('profile.')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('edit');
+        Route::put('/change-password', [ProfileController::class, 'changePassword'])->name('change_password');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
+    });
 });
 
 
@@ -74,3 +77,5 @@ Route::middleware('guest')->group(function () {
     // Route::post('reset-password', [NewPasswordController::class, 'store'])
     //     ->name('password.store');
 });
+
+Route::get('sitemap.xml', [SitemapController::class, 'index']);

@@ -2,6 +2,9 @@
 import QCurrencyInput from "@/Components/QCurrencyInput.vue";
 import { computed, ref } from "vue";
 import { router, useForm } from "@inertiajs/vue3";
+import { event } from "vue-gtag";
+import { toCurrency, toFixed } from "@/Utils/functions";
+import { DraggableArea } from "vue-advanced-cropper";
 
 export interface ParamsType {
 	initialValue: number;
@@ -62,11 +65,40 @@ const submit = () => {
 		data.ipcaType = undefined;
 		data.irrf = undefined;
 	}
-	router.reload({
-		preserveState: true,
-		data,
-		onFinish: () => (loading.value = false)
-	});
+	{
+		try {
+			const params = {
+				"Valor inicial": toCurrency(form.initialValue),
+				"Valor mensal": toCurrency(form.monthlyValue),
+				"Taxa de juros": `${toFixed(form.feesTax)}% (${taxTypeLabel})`,
+				"Período": `${form.period} (${periodTypeLabel})`,
+				"IRRF": `${data.irrf ? "Incluído" : "Não incluído"}`
+			};
+
+			if (data.ipcaType && data.ipca) {
+				Object.assign(params, {
+					IPCA: `${toFixed(data.ipca)}% (${ipcaTypeLabel})`
+				});
+			}
+
+			const event_label = Object.entries(params)
+				.map(([k, v]) => `${k}: ${v}`)
+				.join(" - ");
+
+			event("Click", {
+				event_feature: "Calculadora",
+				action: "Calcular",
+				event_category: "Calculadora",
+				event_label
+			});
+		} finally {
+			router.reload({
+				preserveState: true,
+				data,
+				onFinish: () => (loading.value = false)
+			});
+		}
+	}
 };
 
 const reset = () => form.reset();

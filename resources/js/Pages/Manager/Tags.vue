@@ -56,7 +56,7 @@ const onRequest = (props: any) => {
 
 	loading.value = true;
 	router.reload({
-		only: ["categories", "pagination"],
+		only: ["tags", "pagination"],
 		preserveState: true,
 		data: {
 			page,

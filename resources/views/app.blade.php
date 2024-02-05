@@ -36,21 +36,6 @@
     @routes
     @vite(['resources/js/app.ts', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
-
-    @if (!empty(config('app.google-analytics-id')))
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-N4SXQTWCLD"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
-
-            gtag('config', '{{ config('app.google-analytics-id') }}');
-        </script>
-    @endif
 </head>
 
 <body>

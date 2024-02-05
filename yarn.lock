@@ -950,6 +950,11 @@ vue-currency-input@^3.0.5:
   resolved "https://registry.yarnpkg.com/vue-currency-input/-/vue-currency-input-3.0.5.tgz#292cd735740fce1264c1dde47966385da0e2df07"
   integrity sha512-HG1hKvAvUDt/mklm+2nEEOuvMNxXVd+O2v2PPOia0iNAs4a7B0fWEsHSoca60Ah9EA4nR0Do5UQUkR5Wqhcb/g==
 
+vue-gtag@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/vue-gtag/-/vue-gtag-2.0.1.tgz#d4dc1b9cf79809c37ce844824c0f7fa97af520dd"
+  integrity sha512-aM4A58FVL0wV2ptYi+xzAjeg+pQVRyUcfBc5UkXAwQrR4t3WBhor50Izp2I+3Oo7+l+vWJ7u78DGcNzReb8S/A==
+
 vue-template-compiler@^2.7.14:
   version "2.7.15"
   resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.7.15.tgz#ec88ba8ceafe0f17a528b89c57e01e02da92b0de"
