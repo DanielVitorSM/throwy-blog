@@ -32,23 +32,18 @@ watch(search, (val: string) => {
 				<!-- <div v-if="!$q.screen.lt.md" class="row q-gutter-xs"> -->
 				<!-- <q-btn flat class="no-hover" label="Home" no-caps /> -->
 				<!-- <q-btn flat class="no-hover" label="Blog" no-caps />
-					<q-btn flat class="no-hover" label="Sobre nós" no-caps />
-					<q-btn-dropdown
-						:ripple="false"
-						class="no-hover"
-						flat
-						no-caps
-						label="Ferramentas"
-					>
-						<q-list>
+					<q-btn flat class="no-hover" label="Sobre nós" no-caps /> -->
+				<q-btn-dropdown :ripple="false" class="no-hover" flat no-caps label="Ferramentas">
+					<q-list>
+						<Link :href="$route('tools.compound_interest_calculator')">
 							<q-item clickable v-close-popup>
 								<q-item-section>
-									<q-item-label>Calculadora</q-item-label>
+									<q-item-label>Calculadora de Juros Compostos</q-item-label>
 								</q-item-section>
 							</q-item>
-						</q-list>
-					</q-btn-dropdown>
-				</div> -->
+						</Link>
+					</q-list>
+				</q-btn-dropdown>
 
 				<div v-if="!$q.screen.lt.sm" class="q-ml-md">
 					<q-input

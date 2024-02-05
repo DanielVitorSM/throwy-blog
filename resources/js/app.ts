@@ -23,7 +23,7 @@ window.route = route;
 const appName = window.document.getElementsByTagName("title")[0]?.innerText || "Throwy";
 
 createInertiaApp({
-	title: (title) => `${title} - ${appName}`,
+	title: (title) => `${title} — ${appName}`,
 	resolve: (name) =>
 		resolvePageComponent(
 			`./Pages/${name}.vue`,
@@ -54,6 +54,9 @@ createInertiaApp({
 		return app;
 	},
 	progress: {
-		color: "#4B5563"
+		color: "#FF006E",
+		delay: 250,
+		includeCSS: true,
+		showSpinner: false,
 	}
 });

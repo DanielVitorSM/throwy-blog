@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\ToolController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,10 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'show'])->name('home');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+Route::prefix('tools')->name('tools.')->group(function () {
+    Route::get('calculadora-de-juros-compostos', [ToolController::class, 'compoundInterestCalculator'])->name('compound_interest_calculator');
+});
 
 Route::middleware('auth')->group(function () {
     Route::prefix('manager')->group(function () {

@@ -1,16 +1,18 @@
 import dayjs from "dayjs";
 import constants from "./constants";
+import { exportFile, useQuasar, type QTable } from "quasar";
 
 /**
  * Gera os links de compartilhamento para determinada rede social.
  */
-export const shareOn = (type: string, title: string, url: string): string | null => {
+export const shareOn = (type: string, title: string, url: string, text: string): string | null => {
+	const encoded = encodeURI(text);
 	const socialLinks: { [key: string]: string } = {
 		twitter: `https://twitter.com/intent/tweet?text=${title}&url=${url}`,
 		facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
 		linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
-		whatsapp: `https://api.whatsapp.com/send?text=Olha%20que%20artigo%20legal:%20${url}`,
-		mail: `mailto:?subject=${title}&body=Veja%20sobre%20esse%20artigo%20em:%20${url}`
+		whatsapp: `https://api.whatsapp.com/send?text=${encoded}:%20${url}`,
+		mail: `mailto:?subject=${title}&body=${encoded}:%20${url}`
 	};
 
 	if (type in socialLinks) return socialLinks[type];
@@ -88,4 +90,76 @@ export const formatDatetime = (val: string): string => {
 	if (!val) return "-";
 
 	return dayjs(val).format("DD/MM/YYYY HH:mm:ss");
+};
+
+/**
+ * Transforma um valor em moeda.
+ */
+export const toCurrency = (val: string | number) => {
+	if (!val) return val;
+	if (typeof val !== "number") return val;
+
+	var formatter = new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL"
+	});
+	return formatter.format(val);
+};
+
+/**
+ * Transforma um valor em decimal local.
+ */
+export const toFixed = (val: string | number) => {
+	if (typeof val !== "number") return val;
+
+	var formatter = new Intl.NumberFormat("pt-BR", {
+		maximumFractionDigits: 2,
+		minimumFractionDigits: 2
+	});
+	return formatter.format(val);
+};
+
+export const wrapCsvValue = (val: any, formatFn?: any, row?: any) => {
+	let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
+
+	formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+
+	formatted = formatted.split('"').join('""');
+
+	return `"${formatted}"`;
+};
+
+export const exportTable = (columns: QTable["columns"], rows: any) => {
+	const $q = useQuasar();
+
+	if (!columns) return;
+
+	// naive encoding to csv format
+	const content = [columns.map((col) => wrapCsvValue(col.label))]
+		.concat(
+			rows.map((row: any) =>
+				columns
+					.map((col) =>
+						wrapCsvValue(
+							typeof col.field === "function"
+								? col.field(row)
+								: row[col.field === void 0 ? col.name : col.field],
+							col.format,
+							row
+						)
+					)
+					.join(",")
+			)
+		)
+		.join("\r\n");
+
+	const status = exportFile("tabela-de-juros-compostos.csv", content, "text/csv");
+
+	if (status !== true) {
+		$q.notify({
+			message: "O navegador recusou o download do arquivo...",
+			color: "negative",
+			icon: "warning"
+		});
+	}
 };

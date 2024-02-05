@@ -4,14 +4,24 @@ import constants from "@/Utils/constants";
 import { shareOn } from "@/Utils/functions";
 import { copyToClipboard } from "quasar";
 
-const { slug } = defineProps({
+const { slug, name, current } = defineProps({
 	slug: {
-		type: String,
-		required: true
+		type: String
+	},
+	name: {
+		type: String
+	},
+	current: {
+		type: Boolean,
+		default: () => false
 	},
 	title: {
 		type: String,
 		required: true
+	},
+	text: {
+		type: String,
+		default: () => "Olha que artigo legal"
 	},
 	asRow: {
 		type: Boolean,
@@ -19,7 +29,12 @@ const { slug } = defineProps({
 	}
 });
 
-const shareLink = computed(() => route("blog.show", { slug }));
+const shareLink = computed(() => {
+	if (current) return window.location.href;
+	if (slug) return route("blog.show", { slug });
+	if (name) return route(name);
+	return route("home");
+});
 const showingShareLinkTooltip = ref(false);
 
 const copyShareLink = () =>
@@ -49,7 +64,7 @@ const copyShareLink = () =>
 			<a
 				v-for="[type, icon] in Object.entries(constants.SHARE_BUTTONS_ICONS)"
 				:key="type"
-				:href="shareOn(type, title, shareLink) ?? '/'"
+				:href="shareOn(type, title, shareLink, text) ?? '/'"
 				target="_blank"
 				class="text-reset"
 			>
